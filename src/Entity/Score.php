@@ -12,6 +12,8 @@ use App\Controller\SubmitScoreController;
 use App\Repository\ScoreRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation\Timestampable;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ScoreRepository::class)]
@@ -30,7 +32,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
                 read:false
             )        
         ],
-        normalizationContext: ['groups' => [self::GROUP_READ]],
+        normalizationContext: [
+            'groups' => [self::GROUP_READ],
+            'datetime_format' => "Y-m-d H:i"
+        ],
         denormalizationContext: ['groups' => [self::GROUP_WRITE]],
         order: ['score' => 'ASC'],
         paginationItemsPerPage: 10,
@@ -40,10 +45,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiFilter(SearchFilter::class, properties: ['game.code'])]
 class Score
 {
+    use TimestampableEntity;
+
     const GROUP_READ = "score.read";
     const GROUP_READ_SINGLE = "score.read_single";
     const GROUP_WRITE = "score.write";
-    
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -70,6 +77,11 @@ class Score
     
     #[Groups([self::GROUP_READ])]
     private int $position;
+
+    #[Timestampable(on: 'create')]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups([self::GROUP_READ])]
+    protected $createdAt;
 
     public function getId(): ?int
     {
