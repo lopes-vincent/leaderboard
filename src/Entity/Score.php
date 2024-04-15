@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation\Timestampable;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 
 #[ORM\Entity(repositoryClass: ScoreRepository::class)]
 #[ApiResource(
@@ -43,6 +44,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     )
 ]
 #[ApiFilter(SearchFilter::class, properties: ['game.code'])]
+#[ApiFilter(OrderFilter::class, properties: ['score'], arguments: ['orderParameterName' => 'order'])]
 class Score
 {
     use TimestampableEntity;
