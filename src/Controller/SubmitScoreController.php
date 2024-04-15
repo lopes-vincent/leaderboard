@@ -36,11 +36,14 @@ class SubmitScoreController
         
         $entityManager->persist($score);
         $entityManager->flush();
+
+        $scoreCollection = $game->getScores();
         
         $criteria = new Criteria();
         $where = $score->getDirection() === "asc" ? Criteria::expr()->lt('score', $score->getScore()) : Criteria::expr()->gt('score', $score->getScore());
         $criteria->where($where);
-        $count = $scoreRepository->matching($criteria)->count();
+        
+        $count = $scoreCollection->matching($criteria)->count();
         $score->setPosition($count + 1);
         
         return $score;
