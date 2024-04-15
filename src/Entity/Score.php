@@ -76,6 +76,9 @@ class Score
 
     #[Groups([self::GROUP_WRITE])]
     private ?string $hash = null;
+
+    #[Groups([self::GROUP_WRITE])]
+    private string $direction = 'asc';
     
     #[Groups([self::GROUP_READ])]
     private int $position;
@@ -146,6 +149,18 @@ class Score
     public function setHash(string $hash): static
     {
         $this->hash = $hash;
+
+        return $this;
+    }
+
+    public function getDirection(): ?string
+    {
+        return $this->direction;
+    }
+
+    public function setDirection(string $direction): static
+    {
+        $this->direction = $direction;
 
         return $this;
     }
